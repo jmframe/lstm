@@ -14,7 +14,7 @@ model = bmi_lstm.bmi_LSTM()
 
 # Initializing the BMI
 print('Initializing the BMI')
-model.initialize(bmi_cfg_file=Path('./bmi_config_files/01022500_hourly_all_attributes_forcings.yml'))
+model.initialize(bmi_cfg_file=Path('./run_config_files/01022500_hourly_all_attributes_forcings.yml'))
 
 # Get input data that matches the LSTM test runs
 print('Get input data that matches the LSTM test runs')
@@ -28,14 +28,14 @@ for precip, temp in zip(list(sample_data['total_precipitation'][3].data),
     model.set_value('atmosphere_water__time_integral_of_precipitation_mass_flux',precip)
     model.set_value('land_surface_air__temperature',temp)
 
-    print('the temperature and precipitation are set to {:.2f} and {:.2f}'.format(model.get_value('land_surface_air__temperature'), 
-                                                     model.get_value('atmosphere_water__time_integral_of_precipitation_mass_flux')))
+#    print('the temperature and precipitation are set to {:.2f} and {:.2f}'.format(model.get_value('land_surface_air__temperature'), 
+#                                                     model.get_value('atmosphere_water__time_integral_of_precipitation_mass_flux')))
     model.update()
 
     print('the streamflow (CFS) at time {} is {:.2f}'.format(model.get_current_time(), 
                                 model.get_value('land_surface_water__runoff_volume_flux')))
 
-    if model.t > 10:
+    if model.t > 2*365*24:
         print('stopping the loop')
         break
 

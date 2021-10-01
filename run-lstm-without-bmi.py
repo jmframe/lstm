@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import pickle
 from pathlib import Path
+from netCDF4 import Dataset
 # Here is the LSTM model we want to run
 import nextgen_cuda_lstm
 # Configuration file functionality
@@ -161,7 +162,7 @@ class LSTM_run_class():
                                                        hidden_layer_size=self.hidden_layer_size, 
                                                        output_size=self.output_size, 
                                                        batch_size=1, 
-                                                       seq_length=self.cfg_train.seq_length)
+                                                       seq_length=1)
 
         # ------------ Load in the trained weights ----------------------------#
         # Save the default model weights. We need to make sure we have the same keys.
@@ -184,8 +185,8 @@ class LSTM_run_class():
         self.initialize_forcings()
         
         if self.cfg_run['initial_state'] == 'zero':
-            self.h_t = torch.zeros(self.cfg_train.seq_length, self.batch_size, self.hidden_layer_size).float()
-            self.c_t = torch.zeros(self.cfg_train.seq_length, self.batch_size, self.hidden_layer_size).float()
+            self.h_t = torch.zeros(1, self.batch_size, self.hidden_layer_size).float()
+            self.c_t = torch.zeros(1, self.batch_size, self.hidden_layer_size).float()
 
         self.t = 0
 
@@ -347,7 +348,7 @@ model = LSTM_run_class()
 
 # Initializing the BMI
 print('Setting up the model to run')
-model.initialize(bmi_cfg_file=Path('./bmi_config_files/01022500_hourly_all_attributes_forcings.yml'))
+model.setup_model_for_run(driver_cfg_file=Path('./run_config_files/01022500_hourly_all_attributes_forcings.yml'))
 
 # Get input data that matches the LSTM test runs
 print('Get input data that matches the LSTM test runs')
@@ -358,16 +359,13 @@ print('Now loop through the inputs, set the forcing values, and update the model
 for precip, temp in zip(list(sample_data['total_precipitation'][3].data),
                         list(sample_data['temperature'][3].data)):
 
-    model.set_value('atmosphere_water__time_integral_of_precipitation_mass_flux',precip)
-    model.set_value('land_surface_air__temperature',temp)
+    model._values['atmosphere_water__time_integral_of_precipitation_mass_flux'] = precip
+    model._values['land_surface_air__temperature'] = temp
 
-    print('the temperature and precipitation are set to {:.2f} and {:.2f}'.format(model.get_value('land_surface_air__temperature'), 
-                                                     model.get_value('atmosphere_water__time_integral_of_precipitation_mass_flux')))
-    model.update()
+    model.run_single_timestep()
 
-    print('the streamflow (CFS) at time {} is {:.2f}'.format(model.get_current_time(), 
-                                model.get_value('land_surface_water__runoff_volume_flux')))
+    print('the streamflow (CFS) at time {} is {:.2f}'.format(model.t, model._values['land_surface_water__runoff_volume_flux']))
 
-    if model.t > 10:
+    if model.t > 2*365*24:
         print('stopping the loop')
         break
