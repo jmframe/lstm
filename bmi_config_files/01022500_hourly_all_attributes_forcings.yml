@@ -1,12 +1,26 @@
-time_step: '1 hour'
-initial_state: 'zero'
+# This is the configuration file for the trained LSTM. 
+# This is required to run the model, but should not be modified.
+train_cfg_file: ./trained_neuralhydrology_models/hourly_all_attributes_and_forcings/config.yml
+
+# Meta data about how to run the model
+time_step: '1 hour'   # DELETE ME
 basin_name: 'Narraguagus River at Cherryfield, Maine'
 basin_id: '01022500'
-area_sqkm: 620.38
 lat: 44.60797
 lon: -67.93524
-train_cfg_file: ./trained_neuralhydrology_models/hourly_all_attributes_and_forcings/config.yml
+
+
+# This option should be either zero or a path to the initial state file.
+initial_state: 'zero' # Option to load in states or initialize to zero
+# ^ might not be neccessary... depends on if warm up period is required.
+
+# This is required for determining what is printed out
 verbose: 1
+
+# STATIC Attributes
+## Required to interpret the results from the LSTM
+area_sqkm: 620.38
+## Required to run the LSTM
 elev_mean: 92.68
 slope_mean: 17.79072
 area_gages2: 573.60000

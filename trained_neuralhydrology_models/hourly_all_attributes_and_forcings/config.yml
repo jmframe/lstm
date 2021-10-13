@@ -1,3 +1,8 @@
+# WARNING: DO NOT CHANGE ANYTHING IN THIS FILE
+# This file has some information that was used to train the LSTM
+# And this information is neccessary for the LSTM to run properly
+# If you change this file the LSTM will either not run or run incorrecly.
+# WARNING: DO NOT CHANGE ANYTHING IN THIS FILE
 batch_size: 256
 clip_gradient_norm: 1
 clip_targets_to_zero:
@@ -76,15 +81,15 @@ static_attributes:
 - low_prec_dur
 target_variables:
 - QObs(mm/d)
-test_basin_file: basin_list_516.txt
-test_end_date: 30/09/2018
-test_start_date: 01/10/1980
+#DELETE ME test_basin_file: basin_list_516.txt
+#DELETE ME test_end_date: 30/09/2018
+#DELETE ME test_start_date: 01/10/1980
 train_basin_file: basin_list_516.txt
 train_dir: trained_elsewhere
 train_end_date: 30/09/2018
 train_start_date: 01/10/1980
-validate_every: 100
-validate_n_random_basins: 1
-validation_basin_file: basin_list_516.txt
-validation_end_date: 30/09/2018
-validation_start_date: 01/10/1980
+# DELETE ME validate_every: 100
+# DELETE ME validate_n_random_basins: 1
+# DELETE ME validation_basin_file: basin_list_516.txt
+# DELETE ME validation_end_date: 30/09/2018
+# DELETE ME validation_start_date: 01/10/1980
