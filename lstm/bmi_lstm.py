@@ -11,7 +11,7 @@ from pathlib import Path
 import yaml
 # LSTM here is based on PyTorch
 import torch
-
+import os
 # Here is the LSTM model we want to run
 import lstm.nextgen_cuda_lstm as nextgen_cuda_lstm   # (SDP)
 
@@ -267,17 +267,17 @@ class bmi_LSTM(Bmi):
             self.c_t = torch.zeros(1, self.batch_size, self.hidden_layer_size).float()
         else:
             # Assume initial_state is a file name
-            state_file = Path(self.cfg_bmi['initial_state'])
-            if state_file.exists():
-                with open(state_file, 'rb') as f:
+            init_state_file = Path(self.cfg_bmi['initial_state'])
+            if init_state_file.exists():
+                with open(init_state_file, 'rb') as f:
                     state = pickle.load(f)
                     self.h_t = state['h_t']
                     self.c_t = state['c_t']
                     self.t = state.get('time', self.t)  # Default to config start_time if time not in state
                 if self.verbose:
-                    print(f"Loaded model state from {state_file}, starting at time {self.t}.")
+                    print(f"Loaded model state from {init_state_file}, starting at time {self.t}.")
             else:
-                raise FileNotFoundError(f"State file not found: {state_file}")
+                raise FileNotFoundError(f"State file not found: {init_state_file}")
 
         # ----------- The output is area normalized, this is needed to un-normalize it
         #                         mm->m                             km2 -> m2          hour->s    
@@ -302,7 +302,7 @@ class bmi_LSTM(Bmi):
             # Save state if at the specified time step
             if self.save_state_at_time is not None and self.t == self.save_state_at_time:
                 state_file = f"./saved_states/state_{int(self.t)}.pkl"
-                self.save_state(state_file)
+                self._save_state(state_file)
 
     #------------------------------------------------------------ 
     def update_frac(self, time_frac):
@@ -873,6 +873,11 @@ class bmi_LSTM(Bmi):
 
     def _save_state(self, file_path):
         """Save the current LSTM states to a file."""
+        print("Saving model states")
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        
+        # Save the state
         state = {
             'h_t': self.h_t,
             'c_t': self.c_t,
@@ -880,5 +885,5 @@ class bmi_LSTM(Bmi):
         }
         with open(file_path, 'wb') as f:
             pickle.dump(state, f)
-        if self.verbose:
-            print(f"Saved model state to {file_path}")
+#        if self.verbose:
+        print(f"Saved model state to {file_path} at time {self.t}.")
