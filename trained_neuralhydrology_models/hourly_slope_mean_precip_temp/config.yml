@@ -37,7 +37,7 @@ output_activation: linear
 output_dropout: 0.4
 package_version: 1.0.0-beta1
 predict_last_n: 24
-run_dir: ./trained_neuralhydrology_models/hourly_slope_mean_precip_temp
+run_dir: ../trained_neuralhydrology_models/hourly_slope_mean_precip_temp
 save_weights_every: 1
 seed: 102
 seq_length: 336
