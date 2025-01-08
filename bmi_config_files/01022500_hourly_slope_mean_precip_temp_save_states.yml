@@ -1,6 +1,6 @@
 time_step: '1 hour'
 initial_state: 'zero'
-save_state_at_time: 1000
+save_state_at_time: 200000
 basin_name: 'Narraguagus River at Cherryfield, Maine'
 basin_id: '01022500'
 area_sqkm: 620.38

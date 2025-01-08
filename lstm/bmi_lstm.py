@@ -214,6 +214,9 @@ class bmi_LSTM(Bmi):
         else:
             print("Error: No configuration provided, nothing to do...")
         
+        # Gather verbosity lvl from bmi-config for stdout printing, etc.    
+        self.verbose = self.cfg_bmi['verbose']
+
         # ------------- Load in the configuration file for the specific LSTM --#
         # This will include all the details about how the model was trained
         # Inputs, outputs, hyper-parameters, scalers, weights, etc. etc.
@@ -282,9 +285,6 @@ class bmi_LSTM(Bmi):
         # ----------- The output is area normalized, this is needed to un-normalize it
         #                         mm->m                             km2 -> m2          hour->s    
         self.output_factor_cms =  (1/1000) * (self.cfg_bmi['area_sqkm'] * 1000*1000) * (1/3600)
-
-        # Gather verbosity lvl from bmi-config for stdout printing, etc.    
-        self.verbose = self.cfg_bmi['verbose']
 
     #------------------------------------------------------------ 
     def update(self):

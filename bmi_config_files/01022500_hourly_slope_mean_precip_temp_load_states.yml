@@ -1,6 +1,6 @@
 time_step: '1 hour'
-start_time: 1000
-initial_state: './saved_states/state_1000.pkl'
+start_time: 200000
+initial_state: './saved_states/state_200000.pkl'
 basin_name: 'Narraguagus River at Cherryfield, Maine'
 basin_id: '01022500'
 area_sqkm: 620.38
@@ -10,3 +10,4 @@ train_cfg_file: ../trained_neuralhydrology_models/hourly_slope_mean_precip_temp/
 verbose: 0
 elev_mean: 92.68
 slope_mean: 17.79072
+verbose: 2
